@@ -1,130 +1,319 @@
-# Ten Words, One Song 🎤
+# 🎤 Guess The Taylor Swift Song✨
 
-A browser speed-round game: enter your name, then you've got **60
-seconds** to name as many Taylor Swift songs as you can from their
-clue words. Scores go on a **global leaderboard** that everyone
-playing the game can see, on any device.
+A **Taylor Swift-inspired browser speed-round game** where your lyrical memory is put to the test.
 
-## Play it locally
+You’ll get **10 clue words**. You’ll have **60 seconds** to name as many Taylor Swift songs as you can. Think fast, trust your Swiftie instincts, and see if you can make it onto the global leaderboard.
 
-1. Clone or download this repo.
-2. This project uses Firebase, which requires being served over
-   `http://` rather than opened directly as a file, so use VS Code's
-   **Live Server** extension: right-click `index.html` → **Open with
-   Live Server**.
-3. Before scores will save or load, you need to connect your own
-   free Firebase project — see below.
+*"I had the time of my life fighting dragons with you..."* 🐉
+(Except the dragon is the countdown timer.)
 
-## How it plays
+Scores are saved to a **global leaderboard** that everyone playing the game can see — on any device.
 
-1. Enter a name — it's used on the leaderboard.
-2. The 60-second round timer starts immediately.
-3. You're shown 10 clue words for a song. You get **3 tries** to
-   name it (not case-sensitive, punctuation ignored).
-4. Whether you guess it right or run out of tries, the next song
-   loads automatically — keep going until the clock hits zero.
-5. When time's up, a popup shows your total score and how many
-   songs you got, then saves that score to the leaderboard.
+---
 
-## Scoring
+## 💿 Play It Locally
 
-- Guessing a song right on the **1st try** is worth **10 points**.
-- **2nd try**: 7 points.
-- **3rd try**: 4 points.
-- Running out of tries on a song adds nothing, but doesn't cost you
-  anything either — it just moves to the next song.
-- Your points add up across every song you get right in the 60
-  seconds. That total is what gets saved to the leaderboard as one
-  entry per completed round.
+### 1. Clone or download this repo
 
-## Set up the global leaderboard (Firebase)
+```bash
+git clone <your-repo-url>
+```
 
-The leaderboard is stored in **Firestore**, a free database from
-Google's Firebase platform. You need your own Firebase project (it's
-free for a small game like this) so the game has somewhere to read
-and write scores.
+### 2. Open the project with VS Code
 
-### 1. Create a Firebase project
+This project uses Firebase, which requires the site to run through **HTTP** instead of opening the HTML file directly.
 
-1. Go to [console.firebase.google.com](https://console.firebase.google.com) and sign in with a Google account.
-2. Click **Add project**, name it (e.g. `taylor-swift-word-guess`), and click through the setup (you can disable Google Analytics — not needed here).
+Using VS Code:
 
-### 2. Register a web app
+1. Install the **Live Server** extension.
+2. Right-click `index.html`.
+3. Select **Open with Live Server**.
 
-1. On your new project's dashboard, click the **`</>`** (web) icon to add a web app.
-2. Give it a nickname and click **Register app**. You do *not* need Firebase Hosting.
-3. You'll see a code block with a `firebaseConfig` object containing `apiKey`, `authDomain`, `projectId`, etc. Keep this page open.
+The game will launch in your browser.
 
-### 3. Turn on Firestore
+> ✨ Before scores can be saved or loaded, connect your own free Firebase project. Setup instructions are below.
 
-1. In the left sidebar, go to **Build → Firestore Database**.
-2. Click **Create database**, choose a location close to you, and start in **production mode**.
+---
 
-### 4. Set the security rules
+# 🎲 How It Plays
 
-Still in Firestore, go to the **Rules** tab and replace the contents with:
+### 1. Enter your name
+
+Your name will appear on the leaderboard — choose wisely. Reputation is everything. 🐍
+
+### 2. The clock starts
+
+You have **60 seconds** to prove your Swiftie knowledge.
+
+### 3. Guess the song
+
+You’ll see:
 
 ```
+10 clue words → Guess the Taylor Swift song
+```
+
+You get **3 attempts** per song.
+
+* Answers are **not case-sensitive**
+* Punctuation is ignored
+* The next song automatically appears after a correct guess or failed attempts
+
+Keep going until the countdown reaches zero.
+
+### 4. See your score
+
+When time runs out, your final score appears and is added to the leaderboard.
+
+No friendship bracelet required — but highly encouraged. 🫶
+
+---
+
+# 🏆 Scoring
+
+Every correct answer earns points based on how quickly you solve it:
+
+| Guess         |    Points |
+| ------------- | --------: |
+| First try ✨   | 10 points |
+| Second try 💎 |  7 points |
+| Third try 🌙  |  4 points |
+
+Wrong guesses don't remove points.
+
+Your score is the total of every song you correctly identify during the round.
+
+Can you go full **Mastermind** and recognize every era in seconds? 👀
+
+---
+
+# 🔥 Setting Up the Global Leaderboard (Firebase)
+
+The leaderboard uses **Cloud Firestore**, Firebase's free database service.
+
+You’ll need your own Firebase project so the game has somewhere to store scores.
+
+---
+
+## 1. Create a Firebase Project
+
+1. Visit:
+
+```
+https://console.firebase.google.com
+```
+
+2. Sign in with your Google account.
+3. Click **Add project**.
+4. Name it something like:
+
+```
+taylor-swift-word-guess
+```
+
+5. Google Analytics is optional — it isn't needed for this project.
+
+---
+
+## 2. Register a Web App
+
+From your Firebase dashboard:
+
+1. Click the **</> Web icon**.
+2. Create a new web app.
+3. Give it a nickname.
+4. Click **Register app**.
+
+You’ll receive a Firebase configuration object.
+
+Keep this open — you’ll need it soon.
+
+---
+
+## 3. Enable Firestore
+
+In Firebase:
+
+```
+Build → Firestore Database
+```
+
+Then:
+
+1. Click **Create database**
+2. Choose a nearby location
+3. Start in production mode
+
+---
+
+## 4. Add Firestore Security Rules
+
+Go to:
+
+```
+Firestore Database → Rules
+```
+
+Replace the rules with:
+
+```javascript
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+
     match /scores/{scoreId} {
+
       allow read: if true;
-      allow create: if request.resource.data.keys().hasOnly(['name', 'points', 'createdAt'])
-                    && request.resource.data.name is string
-                    && request.resource.data.name.size() <= 20
-                    && request.resource.data.points is number
-                    && request.resource.data.points >= 0
-                    && request.resource.data.points <= 300;
+
+      allow create:
+        if request.resource.data.keys()
+        .hasOnly(['name', 'points', 'createdAt'])
+
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 20
+
+        && request.resource.data.points is number
+        && request.resource.data.points >= 0
+        && request.resource.data.points <= 300;
+
       allow update, delete: if false;
     }
   }
 }
 ```
 
-Click **Publish**. This lets anyone read the leaderboard and add a
-new score, but never edit or delete existing ones. The `points <= 300`
-check is a generous ceiling — realistically nobody will score over
-~150 in one 60-second round even guessing every song right on the
-first try — so it mainly guards against an obviously fake score being
-submitted directly.
+Click **Publish**.
 
-### 5. Add your config to the project
+These rules allow everyone to:
 
-Open `firebase-config.js` in this project and replace the placeholder
-values with the real ones from Step 2, matching the format already in
-the file (`apiKey`, `authDomain`, `projectId`, `storageBucket`,
-`messagingSenderId`, `appId`).
+✅ View scores
+✅ Submit new scores
 
-Save the file, reload the game with Live Server, and play a round —
-your score should appear in the leaderboard. Open the page on your
-phone (or send the link to a friend once it's on GitHub Pages) and
-you'll see the same scores.
+But prevent:
 
-## Project structure
+❌ Editing scores
+❌ Deleting scores
+
+Think of it as protecting the leaderboard vault. 🔐
+
+---
+
+## 5. Add Your Firebase Config
+
+Open:
+
+```
+firebase-config.js
+```
+
+Replace the placeholder values with your Firebase credentials:
+
+```javascript
+apiKey
+authDomain
+projectId
+storageBucket
+messagingSenderId
+appId
+```
+
+Save the file, refresh the game, and play a round.
+
+Your score should now appear on the leaderboard. 🎉
+
+Share the site with friends and compare your Swiftie scorecards.
+
+---
+
+# 📂 Project Structure
 
 ```
 taylor-swift-word-guess/
-├── index.html          # page structure
-├── style.css            # visual design (friendship-bracelet theme)
-├── script.js            # game logic + the song/clue data
-├── firebase-config.js   # your Firebase project keys + setup
+
+├── index.html            # Page structure
+├── style.css             # Friendship bracelet-inspired design
+├── script.js             # Game logic + song clue database
+├── firebase-config.js    # Firebase connection settings
 └── README.md
 ```
 
-## Adding more songs
+---
 
-Open `script.js` and add a new object to the `SONGS` array at the top:
+# ➕ Adding More Songs
 
-```js
-{ title: "Song Title", clues: ["word1", "word2", "...", "word10"] }
+Want to expand the playlist?
+
+Open:
+
+```
+script.js
 ```
 
-## Tech
+Find the `SONGS` array and add:
 
-Vanilla HTML/CSS/JS plus the Firebase Firestore SDK (loaded straight
-from Google's CDN — no build tools, no `npm install`). Works as a
-static site, so it can be hosted for free with GitHub Pages.
+```javascript
+{
+  title: "Song Title",
+  clues: [
+    "word1",
+    "word2",
+    "word3",
+    "word4",
+    "word5",
+    "word6",
+    "word7",
+    "word8",
+    "word9",
+    "word10"
+  ]
+}
+```
+
+Add your favorite songs from every era:
+
+💚 Debut
+💛 Fearless
+💜 Speak Now
+❤️ Red
+🔵 1989
+🖤 Reputation
+💕 Lover
+🤍 Folklore
+🧡 Evermore
+💙 Midnights
+🤍 The Tortured Poets Department
 
 ---
-*Fan-made project, not affiliated with Taylor Swift or her label.*
+
+# 🛠 Tech Stack
+
+Built with:
+
+* HTML
+* CSS
+* Vanilla JavaScript
+* Firebase Firestore
+
+No frameworks.
+No build tools.
+No npm install.
+
+Just a simple static site that can be hosted for free with **GitHub Pages**.
+
+---
+
+# 💌 Credits
+
+Fan-made project created for Swifties everywhere.
+
+Not affiliated with Taylor Swift, Taylor Nation, or any record label.
+
+Made with:
+
+✨ clues
+🎶 eras
+🫶 friendship bracelet energy
+and a dangerous amount of Taylor Swift references.
+
+*"Long story short, I survived."* 💫
