@@ -12,8 +12,9 @@
 
   <div class="string"></div>
 
-  <div class="welcome-overlay" id="welcome-overlay">
-    <form class="welcome-card" id="welcome-form">
+  <!-- Username entry, shown first -->
+  <div class="modal-overlay" id="welcome-overlay">
+    <form class="modal-card" id="welcome-form">
       <p class="eyebrow">before we start</p>
       <h2>Who's playing?</h2>
       <p class="sub">Enter a name so we know who to congratulate.</p>
@@ -26,15 +27,28 @@
         maxlength="20"
         autocomplete="off"
       />
-      <button type="submit" id="welcome-submit">Let's play</button>
+      <button type="submit" class="modal-primary-btn" id="welcome-submit">Let's play</button>
     </form>
+  </div>
+
+  <!-- Round summary popup, shown when the 60-second timer runs out -->
+  <div class="modal-overlay" id="roundover-overlay" hidden>
+    <div class="modal-card">
+      <p class="eyebrow">time's up</p>
+      <h2>Round complete!</h2>
+      <p class="sub" id="roundover-summary"></p>
+      <div class="modal-actions">
+        <button type="button" class="ghost-btn modal-ghost" id="roundover-leaderboard-btn">Check leaderboard</button>
+        <button type="button" class="modal-primary-btn" id="roundover-again-btn">Play again</button>
+      </div>
+    </div>
   </div>
 
   <main class="stage" id="stage" hidden>
     <header class="stage-head">
       <p class="eyebrow" id="player-tag">a guessing game for swifties</p>
       <h1>Ten Words,<br>One Song</h1>
-      <p class="sub">Ten clue-beads. One title. Three guesses, 20 seconds each.</p>
+      <p class="sub">You've got 60 seconds — name as many songs as you can. Three tries each, ten clue-beads per song.</p>
     </header>
 
     <section class="bracelet" id="bracelet" aria-label="Clue words">
@@ -42,17 +56,20 @@
     </section>
 
     <section class="game-panel">
-      <div class="tries" id="tries" aria-live="polite">
-        <span class="bead-dot" data-index="1"></span>
-        <span class="bead-dot" data-index="2"></span>
-        <span class="bead-dot" data-index="3"></span>
+      <div class="round-timer-wrap" aria-live="polite">
+        <div class="round-timer-track">
+          <div class="round-timer-fill" id="round-timer-fill"></div>
+        </div>
+        <span class="round-timer-label" id="round-timer-label">60s</span>
       </div>
 
-      <div class="timer-wrap" aria-live="polite">
-        <div class="timer-track">
-          <div class="timer-fill" id="timer-fill"></div>
+      <div class="stats-row">
+        <div class="score-badge">Score: <span id="score-value">0</span> pts</div>
+        <div class="tries" id="tries" aria-live="polite">
+          <span class="bead-dot" data-index="1"></span>
+          <span class="bead-dot" data-index="2"></span>
+          <span class="bead-dot" data-index="3"></span>
         </div>
-        <span class="timer-label" id="timer-label">20s</span>
       </div>
 
       <form id="guess-form" autocomplete="off">
@@ -68,8 +85,16 @@
       </form>
 
       <p id="feedback" class="feedback" aria-live="polite"></p>
+    </section>
 
-      <button id="new-game-btn" class="ghost-btn" type="button">New song</button>
+    <section class="leaderboard" id="leaderboard-section" aria-label="Leaderboard">
+      <div class="leaderboard-head">
+        <h2>Leaderboard</h2>
+        <span class="leaderboard-global-tag">🌍 global — everyone's scores</span>
+      </div>
+      <p class="leaderboard-note">1st try = 10 pts &middot; 2nd try = 7 pts &middot; 3rd try = 4 pts. One entry per completed round.</p>
+      <ol class="leaderboard-list" id="leaderboard-list"></ol>
+      <p class="leaderboard-empty" id="leaderboard-empty" hidden>No scores yet — be the first to guess one right!</p>
     </section>
   </main>
 
@@ -77,6 +102,6 @@
     <p>Fan-made guessing game &middot; not affiliated with Taylor Swift or her label</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
