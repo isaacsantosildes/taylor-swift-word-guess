@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ten Words, One Song</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Space+Mono:wght@400;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="string"></div>
+
+  <main class="stage">
+    <header class="stage-head">
+      <p class="eyebrow">a guessing game for swifties</p>
+      <h1>Ten Words,<br>One Song</h1>
+      <p class="sub">Ten clue-beads. One title. Three guesses before the thread runs out.</p>
+    </header>
+
+    <section class="bracelet" id="bracelet" aria-label="Clue words">
+      <!-- beads injected by script.js -->
+    </section>
+
+    <section class="game-panel">
+      <div class="tries" id="tries" aria-live="polite">
+        <span class="bead-dot" data-index="1"></span>
+        <span class="bead-dot" data-index="2"></span>
+        <span class="bead-dot" data-index="3"></span>
+      </div>
+
+      <form id="guess-form" autocomplete="off">
+        <label for="guess-input" class="visually-hidden">Type the song title</label>
+        <input
+          type="text"
+          id="guess-input"
+          name="guess"
+          placeholder="type the song title…"
+          aria-describedby="feedback"
+        />
+        <button type="submit" id="submit-btn">Guess</button>
+      </form>
+
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+
+      <button id="new-game-btn" class="ghost-btn" type="button">New song</button>
+    </section>
+  </main>
+
+  <footer class="credits">
+    <p>Fan-made guessing game &middot; not affiliated with Taylor Swift or her label</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

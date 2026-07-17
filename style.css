@@ -1,0 +1,264 @@
+:root {
+  --ink-deep: #180f22;
+  --ink-card: #241531;
+  --cream: #f6ead8;
+  --gold: #d8ae74;
+  --rose: #e8aeb7;
+  --thread: #6b4c7a;
+  --good: #8fbf9f;
+  --bad: #d97b7b;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% -10%, rgba(232, 174, 183, 0.12), transparent 45%),
+    radial-gradient(circle at 90% 10%, rgba(216, 174, 116, 0.10), transparent 40%),
+    var(--ink-deep);
+  color: var(--cream);
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* Decorative bracelet thread across the very top of the page */
+.string {
+  width: 100%;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold) 0 18px,
+    var(--rose) 18px 36px,
+    var(--thread) 36px 54px
+  );
+  opacity: 0.85;
+}
+
+.stage {
+  width: 100%;
+  max-width: 720px;
+  padding: 56px 24px 40px;
+}
+
+.stage-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  color: var(--rose);
+  margin: 0 0 14px;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  line-height: 1.05;
+  margin: 0 0 16px;
+  color: var(--cream);
+}
+
+.sub {
+  font-size: 0.98rem;
+  color: rgba(246, 234, 216, 0.7);
+  max-width: 46ch;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* --- The bracelet of clue-word beads: the signature element --- */
+.bracelet {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 10px;
+  padding: 28px 20px 34px;
+  margin-bottom: 32px;
+}
+
+.bracelet::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--thread), transparent);
+  z-index: 0;
+}
+
+.bead {
+  position: relative;
+  z-index: 1;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-deep);
+  background: var(--cream);
+  border-radius: 999px;
+  padding: 9px 16px;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.18);
+  transform: rotate(var(--tilt, 0deg));
+  animation: drop 0.5s cubic-bezier(.2,.9,.3,1.2) backwards;
+}
+
+.bead:nth-child(3n+1) { background: var(--gold); }
+.bead:nth-child(3n+2) { background: var(--rose); }
+.bead:nth-child(3n)   { background: var(--cream); }
+
+@keyframes drop {
+  from { opacity: 0; transform: translateY(-14px) rotate(var(--tilt, 0deg)); }
+  to   { opacity: 1; transform: translateY(0) rotate(var(--tilt, 0deg)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bead { animation: none; }
+}
+
+/* --- Game panel --- */
+.game-panel {
+  background: var(--ink-card);
+  border: 1px solid rgba(216, 174, 116, 0.18);
+  border-radius: var(--radius);
+  padding: 28px;
+  text-align: center;
+}
+
+.tries {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.bead-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: inline-block;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.bead-dot.used {
+  background: rgba(246, 234, 216, 0.15);
+  transform: scale(0.8);
+}
+
+#guess-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#guess-input {
+  flex: 1 1 260px;
+  padding: 13px 16px;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 174, 116, 0.35);
+  background: rgba(246, 234, 216, 0.05);
+  color: var(--cream);
+}
+
+#guess-input::placeholder {
+  color: rgba(246, 234, 216, 0.45);
+}
+
+#guess-input:focus-visible,
+#submit-btn:focus-visible,
+.ghost-btn:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 2px;
+}
+
+#submit-btn {
+  padding: 13px 26px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  background: var(--rose);
+  color: var(--ink-deep);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+#submit-btn:hover {
+  background: var(--gold);
+  transform: translateY(-1px);
+}
+
+#submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.feedback {
+  min-height: 1.4em;
+  margin: 18px 0 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.feedback.good { color: var(--good); }
+.feedback.bad { color: var(--bad); }
+.feedback.neutral { color: rgba(246, 234, 216, 0.7); }
+
+.ghost-btn {
+  margin-top: 10px;
+  background: none;
+  border: 1px solid rgba(246, 234, 216, 0.25);
+  color: rgba(246, 234, 216, 0.75);
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: none;
+}
+
+.ghost-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.credits {
+  color: rgba(246, 234, 216, 0.35);
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 24px;
+}
+
+@media (max-width: 480px) {
+  .game-panel { padding: 22px 18px; }
+  #guess-form { flex-direction: column; }
+  #submit-btn { width: 100%; }
+}
