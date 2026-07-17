@@ -12,11 +12,29 @@
 
   <div class="string"></div>
 
-  <main class="stage">
+  <div class="welcome-overlay" id="welcome-overlay">
+    <form class="welcome-card" id="welcome-form">
+      <p class="eyebrow">before we start</p>
+      <h2>Who's playing?</h2>
+      <p class="sub">Enter a name so we know who to congratulate.</p>
+      <label for="username-input" class="visually-hidden">Your name</label>
+      <input
+        type="text"
+        id="username-input"
+        name="username"
+        placeholder="your name…"
+        maxlength="20"
+        autocomplete="off"
+      />
+      <button type="submit" id="welcome-submit">Let's play</button>
+    </form>
+  </div>
+
+  <main class="stage" id="stage" hidden>
     <header class="stage-head">
-      <p class="eyebrow">a guessing game for swifties</p>
+      <p class="eyebrow" id="player-tag">a guessing game for swifties</p>
       <h1>Ten Words,<br>One Song</h1>
-      <p class="sub">Ten clue-beads. One title. Three guesses before the thread runs out.</p>
+      <p class="sub">Ten clue-beads. One title. Three guesses, 20 seconds each.</p>
     </header>
 
     <section class="bracelet" id="bracelet" aria-label="Clue words">
@@ -28,6 +46,13 @@
         <span class="bead-dot" data-index="1"></span>
         <span class="bead-dot" data-index="2"></span>
         <span class="bead-dot" data-index="3"></span>
+      </div>
+
+      <div class="timer-wrap" aria-live="polite">
+        <div class="timer-track">
+          <div class="timer-fill" id="timer-fill"></div>
+        </div>
+        <span class="timer-label" id="timer-label">20s</span>
       </div>
 
       <form id="guess-form" autocomplete="off">

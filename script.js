@@ -31,13 +31,24 @@ const SONGS = [
 // ---------------------------------------------------------
 // 2. STATE
 // ---------------------------------------------------------
+const TIME_LIMIT = 20; // seconds allowed per guess
+
 let currentSong = null;
 let triesLeft = 3;
 let solved = false;
+let playerName = "";
+let timeLeft = TIME_LIMIT;
+let timerInterval = null;
 
 // ---------------------------------------------------------
 // 3. DOM REFERENCES
 // ---------------------------------------------------------
+const welcomeOverlay = document.getElementById("welcome-overlay");
+const welcomeForm = document.getElementById("welcome-form");
+const usernameInput = document.getElementById("username-input");
+const stageEl = document.getElementById("stage");
+const playerTagEl = document.getElementById("player-tag");
+
 const braceletEl = document.getElementById("bracelet");
 const formEl = document.getElementById("guess-form");
 const inputEl = document.getElementById("guess-input");
@@ -45,6 +56,8 @@ const submitBtn = document.getElementById("submit-btn");
 const feedbackEl = document.getElementById("feedback");
 const newGameBtn = document.getElementById("new-game-btn");
 const dotEls = Array.from(document.querySelectorAll(".bead-dot"));
+const timerFillEl = document.getElementById("timer-fill");
+const timerLabelEl = document.getElementById("timer-label");
 
 // ---------------------------------------------------------
 // 4. HELPERS
@@ -100,13 +113,69 @@ function setFeedback(message, tone) {
 
 function endRound(won) {
   solved = true;
+  stopTimer();
   inputEl.disabled = true;
   submitBtn.disabled = true;
   newGameBtn.style.display = "inline-block";
   if (won) {
-    setFeedback(`🎉 Yes! It was "${currentSong.title}".`, "good");
+    setFeedback(`🎉 Yes, ${playerName}! It was "${currentSong.title}".`, "good");
   } else {
     setFeedback(`Out of tries — it was "${currentSong.title}".`, "bad");
+  }
+}
+
+// --- Timer ---
+function updateTimerDisplay() {
+  const pct = Math.max(0, (timeLeft / TIME_LIMIT) * 100);
+  timerFillEl.style.width = `${pct}%`;
+  timerLabelEl.textContent = `${timeLeft}s`;
+
+  timerFillEl.classList.remove("warn", "danger");
+  if (timeLeft <= 5) {
+    timerFillEl.classList.add("danger");
+  } else if (timeLeft <= 10) {
+    timerFillEl.classList.add("warn");
+  }
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function startTimer() {
+  stopTimer();
+  timeLeft = TIME_LIMIT;
+  updateTimerDisplay();
+
+  timerInterval = setInterval(() => {
+    timeLeft -= 1;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function handleTimeout() {
+  if (solved) return;
+  consumeTry(`Time's up — `);
+}
+
+// Shared logic for "used up a guess", whether from a wrong answer
+// or from the clock running out.
+function consumeTry(prefix) {
+  triesLeft -= 1;
+  useOneDot();
+
+  if (triesLeft <= 0) {
+    endRound(false);
+  } else {
+    const triesWord = triesLeft === 1 ? "try" : "tries";
+    setFeedback(`${prefix}${triesLeft} ${triesWord} left.`, "bad");
+    inputEl.value = "";
+    inputEl.focus();
+    startTimer();
   }
 }
 
@@ -125,8 +194,10 @@ function startNewGame() {
   inputEl.disabled = false;
   submitBtn.disabled = false;
   newGameBtn.style.display = "none";
-  setFeedback("Ten words, one song — you've got three guesses.", "neutral");
+  setFeedback(`Ten words, one song — you've got three guesses, ${TIME_LIMIT}s each.`, "neutral");
   inputEl.focus();
+
+  startTimer();
 }
 
 function handleGuess(event) {
@@ -146,26 +217,36 @@ function handleGuess(event) {
     return;
   }
 
-  triesLeft -= 1;
-  useOneDot();
-
-  if (triesLeft <= 0) {
-    endRound(false);
-  } else {
-    const triesWord = triesLeft === 1 ? "try" : "tries";
-    setFeedback(`Not quite — ${triesLeft} ${triesWord} left.`, "bad");
-    inputEl.value = "";
-    inputEl.focus();
-  }
+  consumeTry("Not quite — ");
 }
 
 // ---------------------------------------------------------
-// 6. EVENTS
+// 6. USERNAME GATE
 // ---------------------------------------------------------
+function handleWelcomeSubmit(event) {
+  event.preventDefault();
+  const typed = usernameInput.value.trim();
+  playerName = typed || "Swiftie";
+
+  playerTagEl.textContent = `playing as ${playerName}`;
+
+  welcomeOverlay.hidden = true;
+  stageEl.hidden = false;
+
+  startNewGame();
+}
+
+// ---------------------------------------------------------
+// 7. EVENTS
+// ---------------------------------------------------------
+welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 formEl.addEventListener("submit", handleGuess);
 newGameBtn.addEventListener("click", startNewGame);
 
 // ---------------------------------------------------------
-// 7. KICK OFF
+// 8. KICK OFF
 // ---------------------------------------------------------
-startNewGame();
+// The game itself starts only after handleWelcomeSubmit runs,
+// so there's nothing to call here — the welcome overlay is
+// visible by default and grabs focus for the player.
+usernameInput.focus();

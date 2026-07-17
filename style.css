@@ -140,6 +140,118 @@ h1 {
   .bead { animation: none; }
 }
 
+/* --- Welcome / username overlay --- */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(232, 174, 183, 0.14), transparent 45%),
+    rgba(11, 6, 16, 0.92);
+  backdrop-filter: blur(4px);
+}
+
+.welcome-overlay[hidden] {
+  display: none;
+}
+
+.welcome-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--ink-card);
+  border: 1px solid rgba(216, 174, 116, 0.25);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.welcome-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin: 6px 0 10px;
+  color: var(--cream);
+}
+
+.welcome-card .sub {
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+#username-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 174, 116, 0.35);
+  background: rgba(246, 234, 216, 0.05);
+  color: var(--cream);
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+#username-input::placeholder {
+  color: rgba(246, 234, 216, 0.45);
+}
+
+#welcome-submit {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--ink-deep);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+#welcome-submit:hover {
+  background: var(--rose);
+  transform: translateY(-1px);
+}
+
+/* --- Countdown timer --- */
+.timer-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.timer-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(246, 234, 216, 0.12);
+  overflow: hidden;
+}
+
+.timer-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--good);
+  border-radius: 999px;
+  transition: width 1s linear, background 0.3s ease;
+}
+
+.timer-fill.warn { background: var(--gold); }
+.timer-fill.danger { background: var(--bad); }
+
+.timer-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: rgba(246, 234, 216, 0.7);
+  min-width: 32px;
+  text-align: right;
+}
+
 /* --- Game panel --- */
 .game-panel {
   background: var(--ink-card);
